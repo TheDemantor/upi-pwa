@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - UPI PWA</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            max-width: 400px;
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0 0 16px 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        p {
+            margin: 0 0 24px 0;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .features {
+            margin-top: 32px;
+            text-align: left;
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+        .feature-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📱</div>
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your internet connection. Don't worry, your UPI PWA still works offline!</p>
+        
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">💾</span>
+                <span>View cached transaction history</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📝</span>
+                <span>Draft new transactions (will sync when online)</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <span>Fast loading from cache</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 32px;">
+            <button onclick="window.location.reload()" class="btn">Try Again</button>
+        </div>
+    </div>
+</body>
+</html>
