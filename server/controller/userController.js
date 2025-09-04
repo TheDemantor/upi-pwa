@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 
 // Get all transactions for a user
@@ -6,7 +7,8 @@ const User = require('../models/User');
 exports.getUserTransactions = async (req, res) => {
 	try {
 		const userId = '68b17ec7b692741c19ed5b3d';
-		const user = await User.findOne({ _id: userId });
+		const objectId = mongoose.Types.ObjectId(userId);
+		const user = await User.findById(objectId);
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
 		}
@@ -22,7 +24,8 @@ exports.getUserTransactions = async (req, res) => {
 exports.getUserNameAndPockets = async (req, res) => {
 	try {
 		const userId = '68b17ec7b692741c19ed5b3d';
-		const user = await User.findOne({ _id: userId });
+		const objectId = mongoose.Types.ObjectId(userId);
+		const user = await User.findById(objectId);
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
 		}
@@ -42,17 +45,18 @@ exports.getUserNameAndPockets = async (req, res) => {
 exports.addTransaction = async (req, res) => {
 	try {
 		const userId = '68b17ec7b692741c19ed5b3d';
+		const objectId = new mongoose.Types.ObjectId(userId);
 		const transaction = req.body;
 		// transaction: { pocket, type, amount, upiId, payee, message }
 
-		const user = await User.findOne({ _id: userId });
+		const user = await User.findById(objectId);
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
 		}
 
 		// Add transaction to user's transactions array
 		user.transactions.push(transaction);
-    console.log(transaction);
+		console.log(transaction);
 
 		// Find the pocket to update
 		const pocket = user.pockets.find(p => p.name === transaction.pocket);

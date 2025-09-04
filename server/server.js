@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -6,12 +7,11 @@ const userRouter = require( "./routes/userRoute");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'https://192.168.1.12:3000', // Change if your frontend runs on a different port
-    credentials: true
+	origin: 'https://192.168.1.12:3000', // Change if your frontend runs on a different port
+	credentials: true
 }));
 
 // Mongoose setup
@@ -20,9 +20,10 @@ mongoose.connect(MONGO_URI, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 })
-	.then(() => console.log('MongoDB connected'))
-	.catch((err) => console.error('MongoDB connection error:', err));
+.then(() => console.log('MongoDB connected'))
+.catch((err) => console.error('MongoDB connection error:', err));
 
+console.log( "PORT", process.env.PORT, MONGO_URI);
 // Example router
 const router = express.Router();
 
