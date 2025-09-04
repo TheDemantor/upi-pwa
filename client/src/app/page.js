@@ -38,8 +38,9 @@ export default function Home() {
                 .then(res => {
                   alert('Transaction sent to backend:', res.data);
                 })
-                .catch(err => {
-                  alert("here" + err);
+                .catch(e => {
+                  alert("here" + e);
+                  console.log("hee", e)
                 });
 
     const initPWAFeatures = async () => {
