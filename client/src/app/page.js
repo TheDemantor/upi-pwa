@@ -34,7 +34,7 @@ export default function Home() {
               // Console log required transaction data
                 console.log(transaction);
               // Send transaction to backend API using axios
-              axios.post('http://localhost:5000/api/user/transaction', transaction)
+              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
                 .then(res => {
                   alert('Transaction sent to backend:', res.data);
                 })
@@ -81,42 +81,42 @@ export default function Home() {
             `Did your payment of ₹${pendingPayment.amount} to ${pendingPayment.upiId} complete successfully?`
           )
           
-          //   if (isSuccess) {
-          //     // Prepare transaction data for API
-          //     const transaction = {
-          //       pocket: formData.pocket,
-          //       type: 'debit',
-          //       amount: Number(pendingPayment.amount),
-          //       upiId: pendingPayment.upiId,
-          //       payee: '',
-          //       message: pendingPayment.note
-          //     };
-          //     // Console log required transaction data
-          //       console.log(transaction);
-          //       alert(transaction)
-          //     // Send transaction to backend API using axios
-          //     axios.post('http://localhost:5000/api/user/transaction', transaction)
-          //       .then(res => {
-          //         alert('Transaction sent to backend:', res.data);
-          //       })
-          //       .catch(err => {
-          //         alert("here" + err);
-          //       });
+            if (isSuccess) {
+              // Prepare transaction data for API
+              const transaction = {
+                pocket: formData.pocket,
+                type: 'debit',
+                amount: Number(pendingPayment.amount),
+                upiId: pendingPayment.upiId,
+                payee: '',
+                message: pendingPayment.note
+              };
+              // Console log required transaction data
+                console.log(transaction);
+                alert(transaction)
+              // Send transaction to backend API using axios
+              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
+                .then(res => {
+                  alert('Transaction sent to backend:', res.data);
+                })
+                .catch(err => {
+                  alert("here" + err);
+                });
                 
                 
 
-          //     // Save to localStorage (you can enhance this to use IndexedDB later)
-          //     const existingHistory = JSON.parse(localStorage.getItem('transactionHistory') || '[]')
-          //     existingHistory.unshift({ ...transaction, id: Date.now().toString(), status: 'success', timestamp: new Date().toISOString() })
-          //     localStorage.setItem('transactionHistory', JSON.stringify(existingHistory))
+              // Save to localStorage (you can enhance this to use IndexedDB later)
+              const existingHistory = JSON.parse(localStorage.getItem('transactionHistory') || '[]')
+              existingHistory.unshift({ ...transaction, id: Date.now().toString(), status: 'success', timestamp: new Date().toISOString() })
+              localStorage.setItem('transactionHistory', JSON.stringify(existingHistory))
 
-          //     alert('Payment confirmed and saved to history!')
+              alert('Payment confirmed and saved to history!')
 
-          //     // Clear the form including pocket dropdown
-          //     setFormData({ pocket: '', upiId: '', amount: '', note: '' })
-          //   } else {
-          //   alert('Payment was not completed. You can try again.')
-          // }
+              // Clear the form including pocket dropdown
+              setFormData({ pocket: '', upiId: '', amount: '', note: '' })
+            } else {
+            alert('Payment was not completed. You can try again.')
+          }
           
           // Clear pending payment
           setPendingPayment(null)

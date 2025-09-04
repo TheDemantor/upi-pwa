@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 app.use(cors({
-	origin: 'https://192.168.1.12:3000', // Change if your frontend runs on a different port
+	origin: ['https://localhost:3000', "http://192.168.0.103:3000/", "https://192.168.1.8:3000"], // Change if your frontend runs on a different port
 	credentials: true
 }));
 
