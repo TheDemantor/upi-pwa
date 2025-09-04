@@ -34,7 +34,7 @@ export default function Home() {
               // Console log required transaction data
                 console.log(transaction);
               // Send transaction to backend API using axios
-              axios.post('http://localhost:5000/api/user/transaction', transaction)
+              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
                 .then(res => {
                   alert('Transaction sent to backend:', res.data);
                 })
@@ -95,13 +95,19 @@ export default function Home() {
                 console.log(transaction);
                 alert(transaction)
               // Send transaction to backend API using axios
-              axios.post('http://localhost:5000/api/user/transaction', transaction)
+
+              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
+
+//               axios.post('http://localhost:5000/api/user/transaction', transaction)
+
                 .then(res => {
                   alert('Transaction sent to backend:', res.data);
                 })
                 .catch(err => {
                   alert("here" + err);
+
                   console.log("hee", e)
+
                 });
                 
                 
