@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Link from 'next/link'
 import QRScanner from '../components/QRScanner'
 import { OfflineStorage, registerBackgroundSync } from '../utils/pwa'
 import { UPIIntent, isValidUPIId } from '../utils/upi'
+import { api } from '../utils/apiClient'
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -33,14 +33,28 @@ export default function Home() {
           }
               // Console log required transaction data
                 console.log(transaction);
-              // Send transaction to backend API using axios
-              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
+              // Send transaction to backend API
+              api.addTransaction(transaction)
                 .then(res => {
-                  alert('Transaction sent to backend:', res.data);
+                  console.log('Transaction sent to backend:', res.data);
+                  alert('Transaction sent to backend successfully!');
                 })
                 .catch(e => {
-                  alert("here" + e);
-                  console.log("hee", e)
+                  console.error('Error sending transaction:', e);
+                  if (e.response) {
+                    // Server responded with error status
+                    console.error('Response data:', e.response.data);
+                    console.error('Response status:', e.response.status);
+                    alert(`Error: ${e.response.data?.message || e.response.statusText || 'Unknown error'}`);
+                  } else if (e.request) {
+                    // Request was made but no response received
+                    console.error('No response received:', e.request);
+                    alert('Network error: No response from server');
+                  } else {
+                    // Something else happened
+                    console.error('Error:', e.message);
+                    alert(`Error: ${e.message}`);
+                  }
                 });
 
     const initPWAFeatures = async () => {
@@ -94,20 +108,28 @@ export default function Home() {
               // Console log required transaction data
                 console.log(transaction);
                 alert(transaction)
-              // Send transaction to backend API using axios
-
-              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
-
-//               axios.post('http://localhost:5000/api/user/transaction', transaction)
-
+              // Send transaction to backend API
+              api.addTransaction(transaction)
                 .then(res => {
-                  alert('Transaction sent to backend:', res.data);
+                  console.log('Transaction sent to backend:', res.data);
+                  alert('Transaction sent to backend successfully!');
                 })
                 .catch(err => {
-                  alert("here" + err);
-
-                  console.log("hee", e)
-
+                  console.error('Error sending transaction:', err);
+                  if (err.response) {
+                    // Server responded with error status
+                    console.error('Response data:', err.response.data);
+                    console.error('Response status:', err.response.status);
+                    alert(`Error: ${err.response.data?.message || err.response.statusText || 'Unknown error'}`);
+                  } else if (err.request) {
+                    // Request was made but no response received
+                    console.error('No response received:', err.request);
+                    alert('Network error: No response from server');
+                  } else {
+                    // Something else happened
+                    console.error('Error:', err.message);
+                    alert(`Error: ${err.message}`);
+                  }
                 });
                 
                 
