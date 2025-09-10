@@ -23,39 +23,39 @@ export default function Home() {
 
   // Initialize PWA features
   useEffect(() => {
-    const transaction = {
-              "pocket": "Fitness",
-              "type": "debit",
-              "amount": 10,
-              "upiId": "9131646124@bank",
-              "payee": "Vaibhav",
-              "message": "test transaction 10.1"
-          }
-              // Console log required transaction data
-                console.log(transaction);
-              // Send transaction to backend API using axios
-              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
-                .then(res => {
-                  console.log('Transaction sent to backend:', res.data);
-                  alert('Transaction sent to backend successfully!');
-                })
-                .catch(e => {
-                  console.error('Error sending transaction:', e);
-                  if (e.response) {
-                    // Server responded with error status
-                    console.error('Response data:', e.response.data);
-                    console.error('Response status:', e.response.status);
-                    alert(`Error: ${e.response.data?.message || e.response.statusText || 'Unknown error'}`);
-                  } else if (e.request) {
-                    // Request was made but no response received
-                    console.error('No response received:', e.request);
-                    alert('Network error: No response from server');
-                  } else {
-                    // Something else happened
-                    console.error('Error:', e.message);
-                    alert(`Error: ${e.message}`);
-                  }
-                });
+    // const transaction = {
+    //   "pocket": "Fitness",
+    //   "type": "debit",
+    //   "amount": 10,
+    //   "upiId": "9131646124@bank",
+    //   "payee": "Vaibhav",
+    //   "message": "test transaction 10.1"
+    // }
+    // // Console log required transaction data
+    // console.log(transaction);
+    // // Send transaction to backend API using axios
+    // axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
+    //   .then(res => {
+    //     console.log('Transaction sent to backend:', res.data);
+    //     alert('Transaction sent to backend successfully!');
+    //   })
+    //   .catch(e => {
+    //     console.error('Error sending transaction:', e);
+    //     if (e.response) {
+    //       // Server responded with error status
+    //       console.error('Response data:', e.response.data);
+    //       console.error('Response status:', e.response.status);
+    //       alert(`Error: ${e.response.data?.message || e.response.statusText || 'Unknown error'}`);
+    //     } else if (e.request) {
+    //       // Request was made but no response received
+    //       console.error('No response received:', e.request);
+    //       alert('Network error: No response from server');
+    //     } else {
+    //       // Something else happened
+    //       console.error('Error:', e.message);
+    //       alert(`Error: ${e.message}`);
+    //     }
+    //   });
 
     const initPWAFeatures = async () => {
       // Initialize offline storage
@@ -84,69 +84,69 @@ export default function Home() {
 
   // Handle payment confirmation when user returns from payment app
   useEffect(() => {
-      
+
 
     const handleVisibilityChange = () => {
-      
+
       if (!document.hidden && pendingPayment) {
         // User has returned to the app and we have a pending payment
         setTimeout(() => {
           const isSuccess = window.confirm(
             `Did your payment of ₹${pendingPayment.amount} to ${pendingPayment.upiId} complete successfully?`
           )
-          
-            if (isSuccess) {
-              // Prepare transaction data for API
-              const transaction = {
-                pocket: formData.pocket,
-                type: 'debit',
-                amount: Number(pendingPayment.amount),
-                upiId: pendingPayment.upiId,
-                payee: '',
-                message: pendingPayment.note
-              };
-              // Console log required transaction data
-                console.log(transaction);
-                alert(transaction)
-              // Send transaction to backend API using axios
-              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
-                .then(res => {
-                  console.log('Transaction sent to backend:', res.data);
-                  alert('Transaction sent to backend successfully!');
-                })
-                .catch(err => {
-                  console.error('Error sending transaction:', err);
-                  if (err.response) {
-                    // Server responded with error status
-                    console.error('Response data:', err.response.data);
-                    console.error('Response status:', err.response.status);
-                    alert(`Error: ${err.response.data?.message || err.response.statusText || 'Unknown error'}`);
-                  } else if (err.request) {
-                    // Request was made but no response received
-                    console.error('No response received:', err.request);
-                    alert('Network error: No response from server');
-                  } else {
-                    // Something else happened
-                    console.error('Error:', err.message);
-                    alert(`Error: ${err.message}`);
-                  }
-                });
-                
-                
 
-              // Save to localStorage (you can enhance this to use IndexedDB later)
-              const existingHistory = JSON.parse(localStorage.getItem('transactionHistory') || '[]')
-              existingHistory.unshift({ ...transaction, id: Date.now().toString(), status: 'success', timestamp: new Date().toISOString() })
-              localStorage.setItem('transactionHistory', JSON.stringify(existingHistory))
+          if (isSuccess) {
+            // Prepare transaction data for API
+            const transaction = {
+              pocket: formData.pocket,
+              type: 'debit',
+              amount: Number(pendingPayment.amount),
+              upiId: pendingPayment.upiId,
+              payee: '',
+              message: pendingPayment.note
+            };
+            // Console log required transaction data
+            console.log(transaction);
+            alert(transaction)
+            // Send transaction to backend API using axios
+            axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
+              .then(res => {
+                console.log('Transaction sent to backend:', res.data);
+                alert('Transaction sent to backend successfully!');
+              })
+              .catch(err => {
+                console.error('Error sending transaction:', err);
+                if (err.response) {
+                  // Server responded with error status
+                  console.error('Response data:', err.response.data);
+                  console.error('Response status:', err.response.status);
+                  alert(`Error: ${err.response.data?.message || err.response.statusText || 'Unknown error'}`);
+                } else if (err.request) {
+                  // Request was made but no response received
+                  console.error('No response received:', err.request);
+                  alert('Network error: No response from server');
+                } else {
+                  // Something else happened
+                  console.error('Error:', err.message);
+                  alert(`Error: ${err.message}`);
+                }
+              });
 
-              alert('Payment confirmed and saved to history!')
 
-              // Clear the form including pocket dropdown
-              setFormData({ pocket: '', upiId: '', amount: '', note: '' })
-            } else {
+
+            // Save to localStorage (you can enhance this to use IndexedDB later)
+            const existingHistory = JSON.parse(localStorage.getItem('transactionHistory') || '[]')
+            existingHistory.unshift({ ...transaction, id: Date.now().toString(), status: 'success', timestamp: new Date().toISOString() })
+            localStorage.setItem('transactionHistory', JSON.stringify(existingHistory))
+
+            alert('Payment confirmed and saved to history!')
+
+            // Clear the form including pocket dropdown
+            setFormData({ pocket: '', upiId: '', amount: '', note: '' })
+          } else {
             alert('Payment was not completed. You can try again.')
           }
-          
+
           // Clear pending payment
           setPendingPayment(null)
         }, 1000) // Small delay to ensure smooth transition
@@ -154,7 +154,7 @@ export default function Home() {
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
@@ -177,7 +177,7 @@ export default function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     // Validate UPI ID format
     if (!isValidUPIId(formData.upiId)) {
       alert('Please enter a valid UPI ID (e.g., user@bank)')
@@ -192,7 +192,7 @@ export default function Home() {
     }
 
     setIsLoading(true)
-    
+
     try {
       // Store transaction locally first (for offline support)
       if (offlineStorage) {
@@ -216,10 +216,10 @@ export default function Home() {
             note: formData.note || `Payment to ${formData.upiId}`,
             timestamp: new Date().toISOString()
           })
-          
+
           // Show success message
           alert(`UPI payment initiated! You'll be redirected to your payment app to complete the transaction of ₹${formData.amount} to ${formData.upiId}`)
-          
+
           // Don't clear form yet - we'll clear it after confirmation
         }
       } catch (upiError) {
@@ -241,7 +241,7 @@ export default function Home() {
               timestamp: new Date().toISOString()
             }),
           })
-          
+
           if (!response.ok) {
             console.log('Failed to log transaction online, saved offline')
           }
@@ -292,7 +292,7 @@ export default function Home() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       const isSecure = window.isSecureContext || window.location.protocol === 'https:' || window.location.hostname === 'localhost'
-      
+
       if (!isSecure && isMobile) {
         alert('Camera access requires HTTPS on mobile devices. Please access this page via HTTPS.')
       } else {
@@ -307,23 +307,23 @@ export default function Home() {
     try {
       // For mobile devices, try very basic constraints first
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      
+
       const constraints = isMobile ? { video: true } : { video: { facingMode: 'environment' } }
-      
+
       console.log('Requesting camera permission with constraints:', constraints)
-      
+
       // Request camera permission
       const stream = await navigator.mediaDevices.getUserMedia(constraints)
-      
+
       // Permission granted, stop the stream immediately
       stream.getTracks().forEach(track => track.stop())
       setCameraPermission('granted')
       return true
-      
+
     } catch (err) {
       console.error('Camera permission denied:', err)
       setCameraPermission('denied')
-      
+
       if (err.name === 'NotAllowedError') {
         alert('Camera permission denied. Please allow camera access to scan QR codes.')
       } else if (err.name === 'NotFoundError') {
@@ -426,11 +426,10 @@ export default function Home() {
                     value={formData.upiId}
                     onChange={handleInputChange}
                     placeholder="example@paytm"
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 ${
-                      formData.upiId && !isValidUPIId(formData.upiId)
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500 ${formData.upiId && !isValidUPIId(formData.upiId)
                         ? 'border-red-300 bg-red-50'
                         : 'border-gray-300'
-                    }`}
+                      }`}
                     required
                   />
                   {formData.upiId && !isValidUPIId(formData.upiId) && (
@@ -441,19 +440,18 @@ export default function Home() {
                   type="button"
                   onClick={handleCameraClick}
                   disabled={cameraPermission === 'checking'}
-                  className={`px-3 py-2 rounded-md transition-colors text-lg ${
-                    cameraPermission === 'denied'
+                  className={`px-3 py-2 rounded-md transition-colors text-lg ${cameraPermission === 'denied'
                       ? 'bg-red-100 hover:bg-red-200 text-red-600 cursor-pointer'
                       : cameraPermission === 'checking'
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-blue-100 hover:bg-blue-200 text-blue-600'
-                  }`}
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-blue-100 hover:bg-blue-200 text-blue-600'
+                    }`}
                   title={
                     cameraPermission === 'denied'
                       ? 'Camera access denied - Click to retry'
                       : cameraPermission === 'checking'
-                      ? 'Checking camera permission...'
-                      : 'Scan QR Code'
+                        ? 'Checking camera permission...'
+                        : 'Scan QR Code'
                   }
                 >
                   {cameraPermission === 'denied' ? '📷❌' : cameraPermission === 'checking' ? '⏳' : '📷'}
@@ -594,7 +592,7 @@ export default function Home() {
               <div className="text-gray-600">HTTPS & local storage</div>
             </div>
           </div>
-          
+
           {/* PWA Status */}
           <div className="mt-4 p-3 bg-blue-50 rounded-lg">
             <div className="flex items-center justify-center space-x-2 text-sm">
