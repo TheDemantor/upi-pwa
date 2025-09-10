@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 // apply before routes
-app.use(cors());        // allow all origins and preflight
+app.use(cors());        // allow all origins
 
 
 

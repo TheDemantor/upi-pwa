@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 exports.getUserTransactions = async (req, res) => {
 	try {
 		const userId = '68b17ec7b692741c19ed5b3d';
-		const objectId = mongoose.Types.ObjectId(userId);
+		const objectId = new mongoose.Types.ObjectId(userId);
 		const user = await User.findById(objectId);
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
@@ -24,7 +24,7 @@ exports.getUserTransactions = async (req, res) => {
 exports.getUserNameAndPockets = async (req, res) => {
 	try {
 		const userId = '68b17ec7b692741c19ed5b3d';
-		const objectId = mongoose.Types.ObjectId(userId);
+		const objectId = new mongoose.Types.ObjectId(userId);
 		const user = await User.findById(objectId);
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' });
