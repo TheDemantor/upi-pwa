@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
+
 // CORS configuration with debugging
 const corsOptions = {
 	origin: function (origin, callback) {
@@ -77,6 +78,7 @@ app.use((req, res, next) => {
 	
 	next();
 });
+
 
 // Mongoose setup
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/upi-pwa';
