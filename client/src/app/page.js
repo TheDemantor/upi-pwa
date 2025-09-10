@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Link from 'next/link'
 import QRScanner from '../components/QRScanner'
 import { OfflineStorage, registerBackgroundSync } from '../utils/pwa'
 import { UPIIntent, isValidUPIId } from '../utils/upi'
-import { api } from '../utils/apiClient'
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -33,8 +33,8 @@ export default function Home() {
           }
               // Console log required transaction data
                 console.log(transaction);
-              // Send transaction to backend API
-              api.addTransaction(transaction)
+              // Send transaction to backend API using axios
+              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
                 .then(res => {
                   console.log('Transaction sent to backend:', res.data);
                   alert('Transaction sent to backend successfully!');
@@ -108,8 +108,8 @@ export default function Home() {
               // Console log required transaction data
                 console.log(transaction);
                 alert(transaction)
-              // Send transaction to backend API
-              api.addTransaction(transaction)
+              // Send transaction to backend API using axios
+              axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
                 .then(res => {
                   console.log('Transaction sent to backend:', res.data);
                   alert('Transaction sent to backend successfully!');

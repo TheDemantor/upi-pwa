@@ -41,11 +41,42 @@ const corsOptions = {
 		}
 	},
 	credentials: true,
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+	allowedHeaders: [
+		'Origin', 
+		'X-Requested-With', 
+		'Content-Type', 
+		'Accept', 
+		'Authorization',
+		'Cache-Control',
+		'Pragma'
+	],
+	exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+	optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+	preflightContinue: false
 };
 
 app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
+
+// Additional CORS middleware for all routes
+app.use((req, res, next) => {
+	// Set CORS headers for all responses
+	res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+	res.header('Access-Control-Allow-Credentials', 'true');
+	
+	// Handle preflight requests
+	if (req.method === 'OPTIONS') {
+		res.status(200).end();
+		return;
+	}
+	
+	next();
+});
 
 // Mongoose setup
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/upi-pwa';
@@ -62,6 +93,15 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
 	res.json({ message: 'API is working!' });
+});
+
+// CORS test endpoint
+router.get('/cors-test', (req, res) => {
+	res.json({ 
+		message: 'CORS is working!', 
+		origin: req.headers.origin,
+		timestamp: new Date().toISOString()
+	});
 });
 
 // Mount router
