@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const userRouter = require( "./routes/userRoute");
+const userRouter = require('./routes/userRoute');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 
-// CORS configuration with debugging
+// CORS configuration
 const corsOptions = {
 	origin: [
 		'http://localhost:3000',
@@ -39,27 +39,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle preflight requests explicitly
-app.options('*', cors(corsOptions));
-
-// Additional CORS middleware for all routes
-app.use((req, res, next) => {
-	// Set CORS headers for all responses
-	res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-	res.header('Access-Control-Allow-Credentials', 'true');
-	
-	// Handle preflight requests
-	if (req.method === 'OPTIONS') {
-		res.status(200).end();
-		return;
-	}
-	
-	next();
-});
-
-
 // Mongoose setup
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/upi-pwa';
 mongoose.connect(MONGO_URI, {
@@ -69,8 +48,9 @@ mongoose.connect(MONGO_URI, {
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
-console.log( "PORT", process.env.PORT, MONGO_URI);
-// Example router
+console.log("PORT", process.env.PORT, MONGO_URI);
+
+// Basic router
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -86,9 +66,9 @@ router.get('/cors-test', (req, res) => {
 	});
 });
 
-// Mount router
+// Mount routers
 app.use('/api', router);
-app.use('/api/user/', userRouter);
+app.use('/api/user', userRouter);
 
 // Start server
 app.listen(PORT, () => {
