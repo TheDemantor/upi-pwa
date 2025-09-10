@@ -6,31 +6,7 @@ import { useState } from 'react'
 export default function TransactionCard({ transaction, onStatusUpdate }) {
   const [isUpdating, setIsUpdating] = useState(false)
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200'
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'failed':
-        return 'bg-red-100 text-red-800 border-red-200'
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
-    }
-  }
-
-  const getStatusIcon = (status ) => {
-    switch (status) {
-      case 'completed':
-        return '✅'
-      case 'pending':
-        return '⏳'
-      case 'failed':
-        return '❌'
-      default:
-        return '❓'
-    }
-  }
+  // ...existing code...
 
   const formatDate = (dateString) => {
     const date = new Date(dateString)
@@ -88,72 +64,27 @@ export default function TransactionCard({ transaction, onStatusUpdate }) {
     }
   }
 
+  // Color for credit/debit
+  const typeColor = transaction.type === 'credit'
+    ? 'text-green-700 bg-green-50 border-green-200'
+    : 'text-red-700 bg-red-50 border-red-200';
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow`}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h3 className="font-semibold text-gray-900 text-lg">{transaction.upiId}</h3>
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(transaction.status)}`}>
-              {getStatusIcon(transaction.status)} {transaction.status}
-            </span>
+            <span className={`px-2 py-1 rounded text-xs font-bold border ${typeColor}`}>{transaction.type === 'credit' ? 'Credit' : 'Debit'}</span>
           </div>
-          
-          <div className="text-sm text-gray-500 mb-2">
-            Transaction ID: {transaction.transactionId}
-          </div>
-          
-          {transaction.note && (
-            <p className="text-gray-600 text-sm mb-3">{transaction.note}</p>
-          )}
+          <div className="text-sm text-gray-700 mb-1 font-semibold">Pocket: <span className="font-bold text-blue-700">{transaction.pocket}</span></div>
+          <div className="text-sm text-gray-500 mb-1">Payee: <span className="font-semibold text-gray-700">{transaction.payee}</span></div>
+          <div className="text-sm text-gray-500 mb-1">UPI ID: <span className="font-semibold text-gray-700">{transaction.upiId}</span></div>
+          <div className="text-sm text-gray-500 mb-1">Message: <span className="font-semibold text-gray-700">{transaction.message}</span></div>
         </div>
-        
         <div className="text-right">
-          <div className="text-2xl font-bold text-gray-900 mb-1">
-            ₹{transaction.amount.toFixed(2)}
-          </div>
-          <div className="text-xs text-gray-500">
-            {formatDate(transaction.createdAt)} at {formatTime(transaction.createdAt)}
-          </div>
+          <div className={`text-2xl font-bold mb-1 ${transaction.type === 'credit' ? 'text-green-700' : 'text-red-700'}`}>₹{transaction.amount}</div>
         </div>
       </div>
-
-      {/* Action Buttons */}
-      {transaction.status === 'pending' && (
-        <div className="flex gap-2 pt-4 border-t border-gray-100">
-          <button
-            onClick={() => handleStatusUpdate('completed')}
-            disabled={isUpdating}
-            className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors disabled:cursor-not-allowed"
-          >
-            {isUpdating ? 'Updating...' : 'Mark Complete'}
-          </button>
-          <button
-            onClick={() => handleStatusUpdate('failed')}
-            disabled={isUpdating}
-            className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors disabled:cursor-not-allowed"
-          >
-            {isUpdating ? 'Updating...' : 'Mark Failed'}
-          </button>
-        </div>
-      )}
-
-      {/* Status-specific actions */}
-      {transaction.status === 'completed' && (
-        <div className="pt-4 border-t border-gray-100">
-          <div className="text-sm text-green-600 font-medium">
-            ✓ Transaction completed successfully
-          </div>
-        </div>
-      )}
-
-      {transaction.status === 'failed' && (
-        <div className="pt-4 border-t border-gray-100">
-          <div className="text-sm text-red-600 font-medium">
-            ✗ Transaction failed
-          </div>
-        </div>
-      )}
     </div>
   )
 }

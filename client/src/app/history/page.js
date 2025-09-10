@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 import TransactionCard from '../../components/TransactionCard'
 import TransactionFilter from '../../components/TransactionFilter'
 
@@ -11,7 +12,6 @@ export default function HistoryPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
-    status: 'all',
     dateRange: 'all',
     amountRange: 'all'
   })
@@ -28,14 +28,10 @@ export default function HistoryPage() {
     try {
       setIsLoading(true)
       setError(null)
-      
-      const response = await fetch('/api/transactions')
-      if (!response.ok) {
-        throw new Error('Failed to fetch transactions')
-      }
-      
-      const data = await response.json()
-      setTransactions(data.transactions || [])
+      // Fetch using axios
+      const response = await axios.get('https://upi-pwa.onrender.com/api/user/transactions')
+      console.log(response)
+      setTransactions(response.data.transactions || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       console.error('Error fetching transactions:', err)
@@ -47,38 +43,26 @@ export default function HistoryPage() {
   const applyFilters = () => {
     let filtered = [...transactions]
 
-    // Filter by status
-    if (filters.status !== 'all') {
-      filtered = filtered.filter(tx => tx.status === filters.status)
-    }
-
-    // Filter by date range
+    // Filter by date range (if createdAt exists)
     if (filters.dateRange !== 'all') {
-      const now = new Date()
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      
-      switch (filters.dateRange) {
-        case 'today':
-          filtered = filtered.filter(tx => {
-            const txDate = new Date(tx.createdAt)
-            return txDate >= today
-          })
-          break
-        case 'week':
-          const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
-          filtered = filtered.filter(tx => {
-            const txDate = new Date(tx.createdAt)
-            return txDate >= weekAgo
-          })
-          break
-        case 'month':
-          const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)
-          filtered = filtered.filter(tx => {
-            const txDate = new Date(tx.createdAt)
-            return txDate >= monthAgo
-          })
-          break
-      }
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      filtered = filtered.filter(tx => {
+        if (!tx.createdAt) return true;
+        const txDate = new Date(tx.createdAt);
+        switch (filters.dateRange) {
+          case 'today':
+            return txDate >= today && txDate < new Date(today.getTime() + 24 * 60 * 60 * 1000);
+          case 'week':
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return txDate >= weekAgo && txDate < new Date(today.getTime() + 24 * 60 * 60 * 1000);
+          case 'month':
+            const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+            return txDate >= monthAgo && txDate < new Date(today.getTime() + 24 * 60 * 60 * 1000);
+          default:
+            return true;
+        }
+      });
     }
 
     // Filter by amount range

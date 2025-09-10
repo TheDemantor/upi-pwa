@@ -21,41 +21,21 @@ export default function Home() {
   const [offlineStorage, setOfflineStorage] = useState(null)
   const [pendingPayment, setPendingPayment] = useState(null) // Track pending payment for confirmation
 
+  useEffect(() => {
+    axios.get('https://upi-pwa.onrender.com/api/user/pockets')
+      .then(res => {
+        console.log("Pockets:", res)
+        setPocketOptions(res.data.pockets.map(p => p.name));
+        setPocketInfo(res.data.pockets);
+      })
+      .catch(err => {
+        console.error('Error fetching pockets:', err);
+        setPocketOptions([]);
+        setPocketInfo([]);
+      });
+  }, []);
   // Initialize PWA features
   useEffect(() => {
-    // const transaction = {
-    //   "pocket": "Fitness",
-    //   "type": "debit",
-    //   "amount": 10,
-    //   "upiId": "9131646124@bank",
-    //   "payee": "Vaibhav",
-    //   "message": "test transaction 10.1"
-    // }
-    // // Console log required transaction data
-    // console.log(transaction);
-    // // Send transaction to backend API using axios
-    // axios.post('https://upi-pwa.onrender.com/api/user/transaction', transaction)
-    //   .then(res => {
-    //     console.log('Transaction sent to backend:', res.data);
-    //     alert('Transaction sent to backend successfully!');
-    //   })
-    //   .catch(e => {
-    //     console.error('Error sending transaction:', e);
-    //     if (e.response) {
-    //       // Server responded with error status
-    //       console.error('Response data:', e.response.data);
-    //       console.error('Response status:', e.response.status);
-    //       alert(`Error: ${e.response.data?.message || e.response.statusText || 'Unknown error'}`);
-    //     } else if (e.request) {
-    //       // Request was made but no response received
-    //       console.error('No response received:', e.request);
-    //       alert('Network error: No response from server');
-    //     } else {
-    //       // Something else happened
-    //       console.error('Error:', e.message);
-    //       alert(`Error: ${e.message}`);
-    //     }
-    //   });
 
     const initPWAFeatures = async () => {
       // Initialize offline storage
@@ -267,15 +247,11 @@ export default function Home() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const pocketOptions = [
-    'Food',
-    'Fitness',
-    'Travel',
-    'Grocery',
-    'Shopping',
-    'Accomodation',
-    'Investmant'
-  ];
+  // Pockets fetched from API
+  const [pocketOptions, setPocketOptions] = useState([]);
+  const [pocketInfo, setPocketInfo] = useState([]);
+
+  
 
   const handleQRScan = (upiData) => {
     setFormData({
@@ -491,9 +467,14 @@ export default function Home() {
                 required
               >
                 <option value="">-- Select Pocket --</option>
-                {pocketOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
+                {pocketInfo.map(pocket => {
+                  // const total = pocket.balance + pocket.spent;
+                  return (
+                    <option key={pocket.name} value={pocket.name}>
+                      {pocket.name}: {pocket.balance} 
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

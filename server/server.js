@@ -43,7 +43,7 @@ router.get('/cors-test', (req, res) => {
 });
 
 // Mount routers
-app.use('/api', router);
+// app.use('/api', router);
 app.use('/api/user', userRouter);
 
 // Start server
