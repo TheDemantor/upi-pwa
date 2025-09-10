@@ -9,10 +9,76 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-	origin: ['https://localhost:3000', "http://192.168.0.103:3000", "https://192.168.1.8:3000", "https://upi-pwa.vercel.app"], // Change if your frontend runs on a different port
-	credentials: true
-}));
+
+// CORS configuration with debugging
+const corsOptions = {
+	origin: function (origin, callback) {
+		const allowedOrigins = [
+			'http://localhost:3000',
+			'https://localhost:3000',
+			'http://127.0.0.1:3000',
+			'https://127.0.0.1:3000',
+			'http://192.168.0.103:3000',
+			'https://192.168.0.103:3000',
+			'http://192.168.1.8:3000',
+			'https://192.168.1.8:3000',
+			'https://upi-pwa.vercel.app',
+			'https://upi-pwa.onrender.com',
+			'http://192.168.1.15:3000',
+			'https://192.168.1.15:3000'
+		];
+		
+		// Allow requests with no origin (like mobile apps or curl requests)
+		if (!origin) return callback(null, true);
+		
+		console.log('CORS Request from origin:', origin);
+		
+		if (allowedOrigins.indexOf(origin) !== -1) {
+			console.log('CORS: Origin allowed');
+			callback(null, true);
+		} else {
+			console.log('CORS Error: Origin not allowed:', origin);
+			callback(new Error('Not allowed by CORS'));
+		}
+	},
+	credentials: true,
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+	allowedHeaders: [
+		'Origin', 
+		'X-Requested-With', 
+		'Content-Type', 
+		'Accept', 
+		'Authorization',
+		'Cache-Control',
+		'Pragma'
+	],
+	exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+	optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+	preflightContinue: false
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
+
+// Additional CORS middleware for all routes
+app.use((req, res, next) => {
+	// Set CORS headers for all responses
+	res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+	res.header('Access-Control-Allow-Credentials', 'true');
+	
+	// Handle preflight requests
+	if (req.method === 'OPTIONS') {
+		res.status(200).end();
+		return;
+	}
+	
+	next();
+});
+
 
 // Mongoose setup
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/upi-pwa';
@@ -29,6 +95,15 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
 	res.json({ message: 'API is working!' });
+});
+
+// CORS test endpoint
+router.get('/cors-test', (req, res) => {
+	res.json({ 
+		message: 'CORS is working!', 
+		origin: req.headers.origin,
+		timestamp: new Date().toISOString()
+	});
 });
 
 // Mount router
