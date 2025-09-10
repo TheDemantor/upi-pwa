@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-// CORS configuration
+
+// CORS configuration with debugging
 const corsOptions = {
 	origin: [
 		'http://localhost:3000',
@@ -37,6 +38,27 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
+
+// Additional CORS middleware for all routes
+app.use((req, res, next) => {
+	// Set CORS headers for all responses
+	res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+	res.header('Access-Control-Allow-Credentials', 'true');
+	
+	// Handle preflight requests
+	if (req.method === 'OPTIONS') {
+		res.status(200).end();
+		return;
+	}
+	
+	next();
+});
+
 
 // Mongoose setup
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/upi-pwa';
