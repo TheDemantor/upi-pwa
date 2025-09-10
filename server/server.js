@@ -10,38 +10,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(express.json());
 
-// CORS configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      "http://localhost:3000",
-      "https://localhost:3000",
-      "http://127.0.0.1:3000",
-      "https://127.0.0.1:3000",
-      "http://192.168.0.103:3000",
-      "https://192.168.0.103:3000",
-      "http://192.168.1.8:3000",
-      "https://192.168.1.8:3000",
-      "http://192.168.1.15:3000",
-      "https://192.168.1.15:3000",
-      "https://upi-pwa.vercel.app",
-      "https://upi-pwa.vercel.app/"
-    ];
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed for this origin: " + origin));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
-};
-
 // apply before routes
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // allow preflight requests
+app.use(cors());        // allow all origins and preflight
+
 
 
 // Mongoose setup
