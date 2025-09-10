@@ -12,49 +12,29 @@ app.use(express.json());
 
 // CORS configuration with debugging
 const corsOptions = {
-	origin: function (origin, callback) {
-		const allowedOrigins = [
-			'http://localhost:3000',
-			'https://localhost:3000',
-			'http://127.0.0.1:3000',
-			'https://127.0.0.1:3000',
-			'http://192.168.0.103:3000',
-			'https://192.168.0.103:3000',
-			'http://192.168.1.8:3000',
-			'https://192.168.1.8:3000',
-			'https://upi-pwa.vercel.app',
-			'https://upi-pwa.onrender.com',
-			'http://192.168.1.15:3000',
-			'https://192.168.1.15:3000'
-		];
-		
-		// Allow requests with no origin (like mobile apps or curl requests)
-		if (!origin) return callback(null, true);
-		
-		console.log('CORS Request from origin:', origin);
-		
-		if (allowedOrigins.indexOf(origin) !== -1) {
-			console.log('CORS: Origin allowed');
-			callback(null, true);
-		} else {
-			console.log('CORS Error: Origin not allowed:', origin);
-			callback(new Error('Not allowed by CORS'));
-		}
-	},
+	origin: [
+		'http://localhost:3000',
+		'https://localhost:3000',
+		'http://127.0.0.1:3000',
+		'https://127.0.0.1:3000',
+		'http://192.168.0.103:3000',
+		'https://192.168.0.103:3000',
+		'http://192.168.1.8:3000',
+		'https://192.168.1.8:3000',
+		'https://upi-pwa.vercel.app',
+		'https://upi-pwa.onrender.com',
+		'http://192.168.1.15:3000',
+		'https://192.168.1.15:3000'
+	],
 	credentials: true,
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 	allowedHeaders: [
 		'Origin', 
 		'X-Requested-With', 
 		'Content-Type', 
 		'Accept', 
-		'Authorization',
-		'Cache-Control',
-		'Pragma'
-	],
-	exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-	optionsSuccessStatus: 200, // Some legacy browsers choke on 204
-	preflightContinue: false
+		'Authorization'
+	]
 };
 
 app.use(cors(corsOptions));
